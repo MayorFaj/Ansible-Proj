@@ -1,7 +1,7 @@
 ---
 
   - name: install mariadb server
-      apt: name=mariadb-server update-cache=yes state=latest
+    apt: name=mariadb-server update-cache=yes state=latest
 
     - name: start mariadb
       service: 

@@ -2,5 +2,5 @@
 
 - hosts: db_webserver
 
-- name: import webserver file
-  import_playbook: ../static_assignments/webserver.yml
+- name: import webserver  database file
+  import_playbook: ../static-assignments/webserver.yml
