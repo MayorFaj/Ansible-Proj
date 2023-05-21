@@ -38,8 +38,9 @@
     - name: alter user
       mysql_user:
         name: root@localhost
-        login_password: ecompassword
-        login_user: ecomuser 
+        password: Password.1
+        login_password:
+        login_user: root
 
     - name: create  user
       mysql_user: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
