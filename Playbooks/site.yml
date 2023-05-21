@@ -39,7 +39,7 @@
 
     - name: Install "pip"
         apt: 
-          name: python-pip
+          name: pip
           state: present
     
     - name: Install "libmysqlserver-dev" 
