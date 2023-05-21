@@ -31,8 +31,8 @@
         state: present
 
     - name: install python MySQL module
-      pip3:
-        name: MySQL-python
+      pip:
+        name: pymysql
         state: present
 
     - name: create  user
