@@ -1,5 +1,6 @@
 ---
-- host: db_webserver
+- hosts: db_webserver
   roles:
     - webserver
   become: true
+
