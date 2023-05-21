@@ -40,10 +40,10 @@
         state: reloaded
 
     - name: create  user
-      mysqluser: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
+      mysql_user: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
 
     - name: create Database
-      mysqldb: db=ecomdb state=present
+      mysql_db: db=ecomdb state=present
 
     - name: create Table
       command: mysql -u ecomuser -pecompassword -e 'CREATE TABLE products (id mediumint(8) unsigned NOT NULL auto_increment,Name varchar(255) default NULL,Price varchar(255) default NULL, ImageUrl varchar(255) default NULL,PRIMARY KEY (id)) AUTO_INCREMENT=1;' ecomdb
