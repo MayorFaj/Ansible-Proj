@@ -4,11 +4,13 @@
   become: yes
   become_user: root
   tasks:
-    - name: install firewalld
-      apt: name=firewalld state=present
+    - name: Install UFW
+      apt:
+        name: ufw
+        state: present
     
-    - name: start firewalld
-      service: name=firewalld state=started enabled=yes
+    - name: start ufw
+      service: name=ufw state=started enabled=yes
 
     - name: install apache
       apt: name=apache2 state=latest update_cache=yes
@@ -28,16 +30,15 @@
     - name: start mysql-server
       service: name=mysql-server state=started enabled=yes
 
-    - name: set firewall rule
-      firewalld: 
-        port: 3306/tcp 
-        permanent: true
-        immediate: true
-        state: enabled
+    - name: Allow incoming MySQL connections
+      ufw:
+        rule: allow
+        port: 3306
+        proto: tcp
 
-    - name: reload firewall
-      firewalld: 
-        state: reloaded
+    - name: Enable UFW
+      ufw:
+        state: enabled
 
     - name: create  user
       mysql_user: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
@@ -62,16 +63,15 @@
     - name: install php-mysql
       apt: name=php-mysql state=present
 
-    - name: set firewall rule
-      firewalld: 
-        port: 80/tcp 
-        permanent: true
-        immediate: true
-        state: enabled
+    - name: Allow incoming MySQL connections
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
 
-    - name: reload firewall
-      firewalld: 
-        state: reloaded
+    - name: Enable UFW
+      ufw:
+        state: enabled
 
     - name: Replace index.html with index.php in httpd.conf
       command: sed -i 's/index.html/index.php/g' /etc/httpd/conf/httpd.conf
