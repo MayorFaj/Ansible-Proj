@@ -22,7 +22,7 @@
 
     - name: Install "pip"
       apt: 
-        name: python3-pip
+        name: python2-pip
         state: present
     
     - name: Install "libmysqlclient-dev" 
