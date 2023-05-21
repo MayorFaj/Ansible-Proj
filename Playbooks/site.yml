@@ -15,14 +15,8 @@
     - name: install apache
       apt: name=apache2 state=latest update_cache=yes
 
-      notify: 
-        - restart apache2
-
-  handlers:
     - name: restart apache2
       service: name=apache2 state=restarted enabled=yes
-
-
 
     - name: install mysql server
       apt: name=mysql-server state=latest
@@ -51,9 +45,7 @@
 
     - name: insert data into table
       command: mysql -u ecomuser -pecompassword -e 'INSERT INTO products (Name,Price,ImageUrl) VALUES ("Laptop","100","c-1.png"),("Drone","200","c-2.png"),("VR","300","c-3.png"),("Tablet","50","c-5.png"),("Watch","90","c-6.png"),("Phone Covers","20","c-7.png"),("Phone","80","c-8.png"),("Laptop","150","c-4.png");' ecomdb
-     
-
-
+    
     - name: install httpd
       apt: name=httpd state=present
 
