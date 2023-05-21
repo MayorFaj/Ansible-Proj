@@ -1,6 +1,5 @@
 ---
 - hosts: db_webserver
-  role:
+  roles:
     - mysql
   become: yes
-  become_user: root

@@ -1,6 +1,5 @@
 ---
 - host: db_webserver
-  role:
+  roles:
     - webserver
   become: true
-  become_user: root
