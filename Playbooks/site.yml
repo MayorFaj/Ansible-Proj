@@ -23,10 +23,50 @@
         name: pymysql
         state: present
 
+
+
+
+    - name: Create database directory
+      file:
+        path: /root/.my.cnf.d
+        state: directory
+        mode: '0700'
+
+    - name: Create MySQL configuration file
+      template:
+        src: templates/my.cnf.j2
+        dest: /root/.my.cnf.d/my.cnf
+        mode: '0600'
+
+    - name: Include MySQL configuration files
+      lineinfile:
+        path: /etc/mysql/my.cnf
+        line: !include /root/.my.cnf.d/*.cnf
+        insertafter: '# The following options will be passed to all MySQL clients'
+
+
+
+
     - name: create Database
       mysql_db: db=ecomdb state=present
 
+
+    - name: Grant privileges to root user
+      mysql_user:
+        name: root
+        host: localhost
+        password: Password.1
+        priv: '*.*:ALL,GRANT'
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_user: root
+        login_password: Ashabi
+        login_host: localhost
+        login_port: 3306/tcp
+
+
     - name: create  user
+      become_user: root
       mysql_user: 
         user: ecomuser 
         password: ecompassword
