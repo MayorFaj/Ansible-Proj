@@ -3,7 +3,14 @@
   hosts: localhost
   become: yes
   become_user: root
-  tasks:  
+  tasks:
+    - name: Install UFW
+      apt:
+        name: ufw
+        state: present
+    
+    - name: start ufw
+      service: name=ufw state=started enabled=yes
 
     - name: install apache
       apt: name=apache2 state=latest update_cache=yes
@@ -19,6 +26,16 @@
         name: mysql
         state: started 
         enabled: yes
+
+    - name: Allow incoming MySQL connections
+      ufw:
+        rule: allow
+        port: 3306
+        proto: tcp
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
 
     - name: Install "pip"
       apt: 
@@ -55,6 +72,16 @@
 
     - name: install php-mysql
       apt: name=php-mysql state=present
+
+    - name: Allow incoming MySQL connections
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
 
     - name: Replace index.html with index.php in httpd.conf
       command: sed -i 's/index.html/index.php/g' /etc/httpd/conf/httpd.conf
