@@ -1,7 +1,6 @@
 ---
 - hosts: db_webserver
   roles:
-    - mysql
+    - mysqlrole
   become: true
 
-  
