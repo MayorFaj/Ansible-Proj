@@ -23,7 +23,7 @@
 
     - name: start mysql-server
       service: 
-        name: mysql-server 
+        name: mysql
         state: started 
         enabled: yes
 
