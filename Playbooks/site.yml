@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: db_webserver
 
 - name: import database file
   import_playbook: ../static_assignments/database.yml

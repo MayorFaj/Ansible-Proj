@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: db_webserver
   role:
     - mysql
   become: yes
