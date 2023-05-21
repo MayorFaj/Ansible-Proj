@@ -39,7 +39,7 @@
       mysql_user:
         name: root@localhost
         password: Password.1
-        login_password:
+        login_password: ' '
         login_user: root
 
     - name: create  user
