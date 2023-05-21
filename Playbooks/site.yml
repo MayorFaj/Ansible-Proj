@@ -3,74 +3,37 @@
   hosts: localhost
   become: yes
   become_user: root
-  tasks:  
+  tasks: 
+    - name: install mariadb server
+      apt: name=mariadb-server update-cache=yes state=latest
 
-    - name: install apache
-      apt: name=apache2 state=latest update_cache=yes
-
-    - name: restart apache2
-      service: name=apache2 state=restarted enabled=yes
-
-    - name: install mysql server
-      apt: name=mysql-server state=latest
-
-    - name: start mysql-server
+    - name: start mariadb
       service: 
-        name: mysql
+        name: mariadb
         state: started 
         enabled: yes
 
-    - name: Install "pip"
-      apt: 
-        name: python3-pip
-        state: present
-    
-    - name: Install "libmysqlclient-dev" 
-      apt: 
-        name: libmysqlclient-dev 
-        state: present
-
-    - name: install python MySQL module
-      pip:
-        name: pymysql
-        state: present
-
-    - name: ensure default user is present
-      mysql_user:
-        name: root@localhost
-        login_password: root
-        login_user: root
-        priv: '*.*:ALL'
-        state: present
-
-#   - name: Copy user-my.cnf file with password credentials.
-#      template:
-#        src: "root-my.cnf.j2"
-#        dest: /home/ubuntu/etc/mysql/my.cnf
-#        owner: root@localhost
-#        mode: 0600
-
-    - name: Update MySQL root password for localhost root account
-      shell: >
-        mysql -u root -NBe
-        "ALTER USER 'root'@'localhost'
-         IDENTIFIED WITH mysql_native_password BY 'Password.1'; FLUSH PRIVILEGES;"
-    
-
-    - name: create  user
-      mysql_user: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
-
     - name: create Database
       mysql_db: db=ecomdb state=present
+
+    - name: create  user
+      mysql_user: 
+        user: ecomuser 
+        password: ecompassword
+        priv: "*.*:ALL,GRANT"
+        state: present
+        flush_privileges: yes
+
 
     - name: create Table
       command: mysql -u ecomuser -pecompassword -e 'CREATE TABLE products (id mediumint(8) unsigned NOT NULL auto_increment,Name varchar(255) default NULL,Price varchar(255) default NULL, ImageUrl varchar(255) default NULL,PRIMARY KEY (id)) AUTO_INCREMENT=1;' ecomdb
 
     - name: insert data into table
       command: mysql -u ecomuser -pecompassword -e 'INSERT INTO products (Name,Price,ImageUrl) VALUES ("Laptop","100","c-1.png"),("Drone","200","c-2.png"),("VR","300","c-3.png"),("Tablet","50","c-5.png"),("Watch","90","c-6.png"),("Phone Covers","20","c-7.png"),("Phone","80","c-8.png"),("Laptop","150","c-4.png");' ecomdb
+
     
-    - name: install httpd
-      apt: name=httpd state=present
+    - name: install apache2
+      apt: name=apache2 state=present
 
     - name: install php
       apt: name=php state=present
@@ -82,8 +45,8 @@
       command: sed -i 's/index.html/index.php/g' /etc/httpd/conf/httpd.conf
 
 
-    - name: start httpd
-      service: name=httpd state=started enabled=yes
+    - name: start apache2
+      service: name=apache2 state=started enabled=yes
 
     - name: install git
       apt: name=git state=present
@@ -91,5 +54,6 @@
     - name: clone repository
       git: repo=https://github.com/kodekloudhub/learning-app-ecommerce.git dest=/var/www/html force=yes
 
-    - name: Replace 172.31.28.34  with localhost in index.php
-      command: sed -i 's/172.31.28.34 /localhost/g' /var/www/html/index.php
+    - name: Replace 172.31.20.80  with localhost in index.php
+      command: sed -i 's/172.31.20.80 /localhost/g' /var/www/html/index.php
+

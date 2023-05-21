@@ -3,14 +3,7 @@
   hosts: localhost
   become: yes
   become_user: root
-  tasks:
-    - name: Install UFW
-      apt:
-        name: ufw
-        state: present
-    
-    - name: start ufw
-      service: name=ufw state=started enabled=yes
+  tasks:  
 
     - name: install apache
       apt: name=apache2 state=latest update_cache=yes
@@ -19,27 +12,17 @@
       service: name=apache2 state=restarted enabled=yes
 
     - name: install mysql server
-      apt: name=mysql-server state=latest
+      apt: name=mariadb state=latest
 
-    - name: start mysql-server
+    - name: start mariadb
       service: 
-        name: mysql
+        name: mariadb
         state: started 
         enabled: yes
 
-    - name: Allow incoming MySQL connections
-      ufw:
-        rule: allow
-        port: 3306
-        proto: tcp
-
-    - name: Enable UFW
-      ufw:
-        state: enabled
-
     - name: Install "pip"
       apt: 
-        name: python-pip
+        name: python3-pip
         state: present
     
     - name: Install "libmysqlclient-dev" 
@@ -49,8 +32,30 @@
 
     - name: install python MySQL module
       pip:
-        name: MySQL-python
+        name: pymysql
         state: present
+
+#    - name: ensure default user is present
+#      mysql_user:
+#        name: root@localhost
+#        login_password: root
+#        login_user: root
+#        priv: '*.*:ALL'
+#        state: present
+
+#   - name: Copy user-my.cnf file with password credentials.
+#      template:
+#        src: "root-my.cnf.j2"
+#        dest: /home/ubuntu/etc/mysql/my.cnf
+#        owner: root@localhost
+#        mode: 0600
+
+    - name: Update MySQL root password for localhost root account
+      shell: >
+        mysql -u root -NBe
+        "ALTER USER 'root'@'localhost'
+         IDENTIFIED WITH mysql_native_password BY 'Password.1'; FLUSH PRIVILEGES;"
+    
 
     - name: create  user
       mysql_user: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
@@ -73,16 +78,6 @@
     - name: install php-mysql
       apt: name=php-mysql state=present
 
-    - name: Allow incoming MySQL connections
-      ufw:
-        rule: allow
-        port: 80
-        proto: tcp
-
-    - name: Enable UFW
-      ufw:
-        state: enabled
-
     - name: Replace index.html with index.php in httpd.conf
       command: sed -i 's/index.html/index.php/g' /etc/httpd/conf/httpd.conf
 
@@ -96,5 +91,5 @@
     - name: clone repository
       git: repo=https://github.com/kodekloudhub/learning-app-ecommerce.git dest=/var/www/html force=yes
 
-    - name: Replace 172.31.28.34  with localhost in index.php
-      command: sed -i 's/172.31.28.34 /localhost/g' /var/www/html/index.php
+    - name: Replace 172.31.20.80  with localhost in index.php
+      command: sed -i 's/172.31.20.80 /localhost/g' /var/www/html/index.php
