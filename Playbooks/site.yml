@@ -37,6 +37,17 @@
       ufw:
         state: enabled
 
+    - name: Install "pip"
+        apt: name=python-pip state=present
+    
+    - name: Install "libmysqlclient-dev" 
+        apt: name=libmysqlclient-dev state=present
+
+    - name: install python MySQL module
+      pip:
+        name: MySQL-python
+        state: present
+
     - name: create  user
       mysql_user: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
 
