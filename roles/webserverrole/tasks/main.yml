@@ -41,10 +41,6 @@
         block: |
           !includedir /root/.my.cnf.d
 
-
-    - name: create Database
-      mysql_db: db=ecomdb state=present
-
     - name: Grant privileges to root user
       mysql_user:
         name: root
@@ -57,6 +53,10 @@
         login_password: Password.1
         login_host: localhost
         login_port: 3306
+
+
+    - name: create Database
+      mysql_db: db=ecomdb state=present
 
 
     - name: create  user
