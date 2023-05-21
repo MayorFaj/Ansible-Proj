@@ -1,2 +1,2 @@
 [db_webserver]
-172.31.20.80     ansible_ssh_user=ubuntu
+172.31.20.80  ansible_ssh_user='ubuntu'
