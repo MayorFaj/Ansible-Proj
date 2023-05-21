@@ -59,7 +59,7 @@
         login_user: root
         login_password: Ashabi
         login_host: localhost
-        login_port: 3306/tcp
+        login_port: 3306
 
     - name: create Database
       mysql_db: db=ecomdb state=present
