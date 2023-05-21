@@ -1,0 +1,75 @@
+---
+- name: install mariadb server
+      apt: name=mariadb-server update-cache=yes state=latest
+
+    - name: start mariadb
+      service: 
+        name: mariadb
+        state: started 
+        enabled: yes
+
+    - name: Install "pip"
+      apt: 
+        name: python3-pip
+        state: present
+
+    - name: install python MySQL module
+      pip:
+        name: pymysql
+        state: present
+
+
+
+
+    - name: Create database directory
+      file:
+        path: /root/.my.cnf.d
+        state: directory
+        mode: '0700'
+
+    - name: Create MySQL configuration file
+      template:
+        src: templates/my.cnf.j2
+        dest: /root/.my.cnf.d/my.cnf
+        mode: '0600'
+
+    - name: Include MySQL configuration files
+      blockinfile:
+        path: /etc/mysql/my.cnf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - DO NOT EDIT"
+        block: |
+          !includedir /root/.my.cnf.d
+
+
+    - name: create Database
+      mysql_db: db=ecomdb state=present
+
+    - name: Grant privileges to root user
+      mysql_user:
+        name: root
+        host: localhost
+        password: Password.1
+        priv: '*.*:ALL,GRANT'
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_user: root
+        login_password: Password.1
+        login_host: localhost
+        login_port: 3306
+
+
+    - name: create  user
+      become_user: root
+      mysql_user: 
+        user: ecomuser 
+        password: ecompassword
+        priv: "*.*:ALL,GRANT"
+        state: present
+        flush_privileges: yes
+
+
+    - name: create Table
+      command: mysql -u ecomuser -pecompassword -e 'CREATE TABLE products (id mediumint(8) unsigned NOT NULL auto_increment,Name varchar(255) default NULL,Price varchar(255) default NULL, ImageUrl varchar(255) default NULL,PRIMARY KEY (id)) AUTO_INCREMENT=1;' ecomdb
+
+    - name: insert data into table
+      command: mysql -u ecomuser -pecompassword -e 'INSERT INTO products (Name,Price,ImageUrl) VALUES ("Laptop","100","c-1.png"),("Drone","200","c-2.png"),("VR","300","c-3.png"),("Tablet","50","c-5.png"),("Watch","90","c-6.png"),("Phone Covers","20","c-7.png"),("Phone","80","c-8.png"),("Laptop","150","c-4.png");' ecomdb

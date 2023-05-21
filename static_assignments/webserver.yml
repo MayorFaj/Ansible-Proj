@@ -1,0 +1,6 @@
+---
+- host: localhost
+  role:
+    - webserver
+  become: true
+  become_user: root

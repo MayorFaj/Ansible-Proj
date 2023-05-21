@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  role:
+    - mysql
+  become: yes
+  become_user: root
