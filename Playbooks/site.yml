@@ -39,10 +39,11 @@
         mode: '0600'
 
     - name: Include MySQL configuration files
-      lineinfile:
+      blockinfile:
         path: /etc/mysql/my.cnf
-        line: !include /root/.my.cnf.d/*.cnf
-        insertafter: '# The following options will be passed to all MySQL clients'
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - DO NOT EDIT"
+        block: |
+          !includedir /root/.my.cnf.d
 
 
 
