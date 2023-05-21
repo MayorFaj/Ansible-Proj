@@ -26,11 +26,11 @@
 
 
 
-#    - name: Create database directory
-#      file:
-#        path: /root/.my.cnf.d
-#        state: directory
-#        mode: '0700'
+    - name: Create database directory
+      file:
+        path: /root/.my.cnf.d
+        state: directory
+        mode: '0700'
 
 #   - name: Create MySQL configuration file
 #      template:
