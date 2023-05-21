@@ -38,10 +38,14 @@
         state: enabled
 
     - name: Install "pip"
-        apt: name=python-pip state=present
+        apt: 
+          name: python-pip
+          state: present
     
-    - name: Install "libmysqlclient-dev" 
-        apt: name=libmysqlclient-dev state=present
+    - name: Install "libmysqlserver-dev" 
+        apt: 
+          name: libmysqlserver-dev 
+          state: present
 
     - name: install python MySQL module
       pip:
