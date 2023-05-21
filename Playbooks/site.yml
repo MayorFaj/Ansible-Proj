@@ -48,10 +48,6 @@
 
 
 
-    - name: create Database
-      mysql_db: db=ecomdb state=present
-
-
     - name: Grant privileges to root user
       mysql_user:
         name: root
@@ -64,6 +60,9 @@
         login_password: Ashabi
         login_host: localhost
         login_port: 3306/tcp
+
+    - name: create Database
+      mysql_db: db=ecomdb state=present
 
 
     - name: create  user
