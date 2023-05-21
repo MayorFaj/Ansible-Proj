@@ -1,0 +1,91 @@
+---
+- name: configure webservers
+  hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
+    - name: install firewalld
+      apt: name=firewalld state=present
+    
+    - name: start firewalld
+      service: name=firewalld state=started enabled=yes
+
+    - name: install apache
+      apt: name=apache2 state=latest update_cache=yes
+
+      notify: 
+        - restart apache2
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted enabled=yes
+
+
+
+    - name: install mysql server
+      apt: name=mysql-server state=latest
+
+    - name: start mysql-server
+      service: name=mysql-server state=started enabled=yes
+
+    - name: set firewall rule
+      firewalld: 
+        port: 3306/tcp 
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: reload firewall
+      firewalld: 
+        state: reloaded
+
+    - name: create  user
+      mysqluser: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
+
+    - name: create Database
+      mysqldb: db=ecomdb state=present
+
+    - name: create Table
+      command: mysql -u ecomuser -pecompassword -e 'CREATE TABLE products (id mediumint(8) unsigned NOT NULL auto_increment,Name varchar(255) default NULL,Price varchar(255) default NULL, ImageUrl varchar(255) default NULL,PRIMARY KEY (id)) AUTO_INCREMENT=1;' ecomdb
+
+    - name: insert data into table
+      command: mysql -u ecomuser -pecompassword -e 'INSERT INTO products (Name,Price,ImageUrl) VALUES ("Laptop","100","c-1.png"),("Drone","200","c-2.png"),("VR","300","c-3.png"),("Tablet","50","c-5.png"),("Watch","90","c-6.png"),("Phone Covers","20","c-7.png"),("Phone","80","c-8.png"),("Laptop","150","c-4.png");' ecomdb
+     
+
+
+    - name: install httpd
+      apt: name=httpd state=present
+
+    - name: install php
+      apt: name=php state=present
+
+    - name: install php-mysql
+      apt: name=php-mysql state=present
+
+    - name: set firewall rule
+      firewalld: 
+        port: 80/tcp 
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: reload firewall
+      firewalld: 
+        state: reloaded
+
+    - name: Replace index.html with index.php in httpd.conf
+      command: sed -i 's/index.html/index.php/g' /etc/httpd/conf/httpd.conf
+
+
+    - name: start httpd
+      service: name=httpd state=started enabled=yes
+
+    - name: install git
+      apt: name=git state=present
+
+    - name: clone repository
+      git: repo=https://github.com/kodekloudhub/learning-app-ecommerce.git dest=/var/www/html force=yes
+
+    - name: Replace 192.168.1.103 with localhost in index.php
+      command: sed -i 's/192.168.1.103/localhost/g' /var/www/html/index.php
+  ...
