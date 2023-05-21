@@ -32,11 +32,11 @@
         state: directory
         mode: '0700'
 
-#   - name: Create MySQL configuration file
-#      template:
-#        src: templates/my.cnf.j2
-#        dest: /root/.my.cnf.d/my.cnf
-#        mode: '0600'
+   - name: Create MySQL configuration file
+      template:
+        src: templates/my.cnf.j2
+        dest: /root/.my.cnf.d/my.cnf
+        mode: '0600'
 
 #    - name: Include MySQL configuration files
 #      blockinfile:
@@ -57,7 +57,7 @@
         state: present
         login_unix_socket: /var/run/mysqld/mysqld.sock
         login_user: root
-        login_password: Ashabi
+        login_password: Password.1
         login_host: localhost
         login_port: 3306
 
