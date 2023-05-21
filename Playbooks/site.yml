@@ -36,6 +36,7 @@
         state: present
 
     - name: create  user
+      become_user: root
       mysql_user: user=ecomuser password=ecompassword priv=*.*:ALL,GRANT state=present
 
     - name: create Database
