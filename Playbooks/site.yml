@@ -22,7 +22,10 @@
       apt: name=mysql-server state=latest
 
     - name: start mysql-server
-      service: name=mysql-server state=started enabled=yes
+      service: 
+        name: mysql-server 
+        state: started 
+        enabled: yes
 
     - name: Allow incoming MySQL connections
       ufw:
