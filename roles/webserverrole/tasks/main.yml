@@ -32,7 +32,19 @@
       template:
         src: templates/my.cnf.j2
         dest: /root/.my.cnf.d/my.cnf
-        mode: '0600'
+        owner: root
+        group: root
+        mode: '0644'
+        notify: restart mysql
+
+    - name: Copy user-my.cnf file with password credentials.
+      template:
+        src: "user-my.cnf.j2"
+        dest: "{{ mysql_user_home }}/.my.cnf"
+        owner: "{{ mysql_user_name }}"
+        mode: 0600
+        when: >
+          mysql_user_name != mysql_root_username
 
     - name: Include MySQL configuration files
       blockinfile:
@@ -40,17 +52,23 @@
         marker: "# {mark} ANSIBLE MANAGED BLOCK - DO NOT EDIT"
         block: |
           !includedir /root/.my.cnf.d
+        owner: root
+        group: root
+        mode: 0644
+        notify: restart mysql
+
+    
 
     - name: Grant privileges to root user
       mysql_user:
         name: root
         host: localhost
-        password: Password.1
+        password: root
         priv: '*.*:ALL,GRANT'
         state: present
         login_unix_socket: /var/run/mysqld/mysqld.sock
         login_user: root
-        login_password: Password.1
+        login_password: root
         login_host: localhost
         login_port: 3306
 
