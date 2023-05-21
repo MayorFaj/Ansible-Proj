@@ -88,4 +88,3 @@
 
     - name: Replace 172.31.8.244  with localhost in index.php
       command: sed -i 's/172.31.8.244 /localhost/g' /var/www/html/index.php
-  ...
